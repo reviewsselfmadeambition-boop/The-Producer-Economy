@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Producer Economy — Qualify or Be Consumed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0a0906;
+    --deep: #111009;
+    --gold: #c9a84c;
+    --gold-dim: #8a6e2f;
+    --gold-light: #e8c96a;
+    --parchment: #f0e6c8;
+    --parchment-dim: #c8b98a;
+    --white: #faf7f0;
+    --red: #8b1a1a;
+    --red-bright: #c0392b;
+    --grey: #4a4540;
+    --grey-light: #7a7268;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--black);
+    color: var(--white);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--gold);
+    padding: 8px 0;
+    overflow: hidden;
+    border-bottom: 1px solid var(--gold-dim);
+  }
+  .ticker {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker span {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--black);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0 40px;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* MASTHEAD */
+  .masthead {
+    text-align: center;
+    padding: 60px 20px 40px;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+  }
+  .masthead::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: var(--gold);
+  }
+  .edition-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: block;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(52px, 9vw, 110px);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.4s;
+  }
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .masthead-sub {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(14px, 2.5vw, 20px);
+    font-style: italic;
+    color: var(--parchment-dim);
+    margin-top: 20px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.6s;
+  }
+  .divider-ornament {
+    margin: 30px auto;
+    color: var(--gold);
+    font-size: 20px;
+    letter-spacing: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+    display: block;
+    text-align: center;
+  }
+
+  /* HERO SECTION */
+  .hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 30px;
+    text-align: center;
+    position: relative;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--red-bright);
+  }
+  .hero-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 30px;
+  }
+  .hero-headline strong {
+    color: var(--gold);
+    font-style: italic;
+  }
+  .hero-body {
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 1.85;
+    color: var(--parchment-dim);
+    max-width: 680px;
+    margin: 0 auto 50px;
+  }
+  .hero-body em {
+    color: var(--parchment);
+    font-style: italic;
+  }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 3px solid var(--gold);
+    border-right: 3px solid var(--gold);
+    padding: 40px 50px;
+    margin: 60px auto;
+    max-width: 750px;
+    position: relative;
+  }
+  .pull-quote::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 120px;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    line-height: 1;
+  }
+  .pull-quote p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 3.5vw, 30px);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--white);
+    text-align: center;
+  }
+  .pull-quote cite {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 20px;
+    font-style: normal;
+  }
+
+  /* HISTORICAL CONTEXT SECTION */
+  .historical {
+    background: var(--deep);
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    padding: 80px 30px;
+  }
+  .historical-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2px 1fr;
+    gap: 0 40px;
+    align-items: start;
+  }
+  .historical-col {
+    padding: 0 10px;
+  }
+  .col-divider {
+    background: rgba(201,168,76,0.25);
+    height: 100%;
+    min-height: 300px;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .historical-col h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .historical-col p {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--parchment-dim);
+    margin-bottom: 16px;
+  }
+  .historical-col p em {
+    color: var(--parchment);
+    font-style: italic;
+  }
+  .year-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    margin-bottom: 16px;
+  }
+
+  /* PRODUCER vs CONSUMER */
+  .pvc-section {
+    padding: 100px 30px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .pvc-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .pvc-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 50px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+  }
+  .pvc-header h2 span { color: var(--gold); font-style: italic; }
+  .pvc-header p {
+    margin-top: 16px;
+    color: var(--parchment-dim);
+    font-size: 16px;
+    font-style: italic;
+  }
+  .pvc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+  .pvc-col-header {
+    padding: 20px 30px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .pvc-col-header.consumer { background: rgba(139,26,26,0.2); color: var(--red-bright); border: 1px solid rgba(139,26,26,0.3); }
+  .pvc-col-header.producer { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.25); }
+  .pvc-row {
+    display: contents;
+  }
+  .pvc-cell {
+    padding: 18px 30px;
+    font-size: 14px;
+    line-height: 1.6;
+    border: 1px solid transparent;
+    position: relative;
+    transition: background 0.2s;
+  }
+  .pvc-cell.consumer {
+    background: rgba(20,10,10,0.8);
+    border-color: rgba(139,26,26,0.15);
+    color: var(--grey-light);
+  }
+  .pvc-cell.consumer::before {
+    content: '✕';
+    color: var(--red-bright);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    margin-right: 10px;
+  }
+  .pvc-cell.producer {
+    background: rgba(15,13,8,0.9);
+    border-color: rgba(201,168,76,0.15);
+    color: var(--parchment-dim);
+  }
+  .pvc-cell.producer::before {
+    content: '◆';
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    margin-right: 10px;
+  }
+  .pvc-verdict {
+    text-align: center;
+    margin-top: 50px;
+    padding: 40px;
+    border: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+  }
+  .pvc-verdict::before {
+    content: 'THE VERDICT';
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--black);
+    padding: 0 16px;
+  }
+  .pvc-verdict p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2.5vw, 24px);
+    font-style: italic;
+    color: var(--white);
+    line-height: 1.6;
+  }
+  .pvc-verdict strong { color: var(--gold); font-style: normal; }
+
+  /* CURRICULUM */
+  .curriculum {
+    background: var(--deep);
+    padding: 100px 30px;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .curriculum-inner { max-width: 860px; margin: 0 auto; }
+  .curriculum-header { text-align: center; margin-bottom: 70px; }
+  .curriculum-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 46px);
+    font-weight: 900;
+    color: var(--white);
+  }
+  .curriculum-header p {
+    font-size: 15px;
+    color: var(--parchment-dim);
+    margin-top: 14px;
+    font-style: italic;
+  }
+  .module {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0 30px;
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    align-items: start;
+  }
+  .module:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .module-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: rgba(201,168,76,0.15);
+    line-height: 0.85;
+    text-align: right;
+    padding-top: 4px;
+    letter-spacing: -0.04em;
+  }
+  .module-content {}
+  .module-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+    line-height: 1.25;
+  }
+  .module-desc {
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--parchment-dim);
+  }
+  .module-lessons {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .lesson-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--gold-dim);
+    border: 1px solid rgba(201,168,76,0.2);
+    padding: 4px 10px;
+  }
+
+  /* WHO IS THIS FOR */
+  .for-section {
+    padding: 100px 30px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .for-header { text-align: center; margin-bottom: 60px; }
+  .for-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 46px);
+    font-weight: 900;
+    color: var(--white);
+  }
+  .for-header h2 em { color: var(--gold); }
+  .for-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2px;
+  }
+  .for-card {
+    background: rgba(15,13,8,0.9);
+    border: 1px solid rgba(201,168,76,0.12);
+    padding: 36px 28px;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .for-card:hover {
+    border-color: rgba(201,168,76,0.35);
+    background: rgba(25,21,12,0.95);
+  }
+  .for-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .for-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+  .for-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--grey-light);
+  }
+  .not-for {
+    margin-top: 50px;
+    padding: 30px 40px;
+    border-left: 3px solid var(--red);
+    background: rgba(139,26,26,0.06);
+  }
+  .not-for-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: block;
+  }
+  .not-for p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--grey-light);
+    font-style: italic;
+  }
+
+  /* PRICING / CTA */
+  .pricing {
+    background: var(--deep);
+    padding: 100px 30px;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .pricing::before {
+    content: 'QUALIFY';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 300px;
+    font-weight: 900;
+    color: rgba(201,168,76,0.025);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+  }
+  .pricing-inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
+  .pricing-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 30px;
+  }
+  .pricing h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 52px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .pricing h2 em { color: var(--gold); font-style: italic; }
+  .pricing-desc {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--parchment-dim);
+    margin-bottom: 50px;
+    font-style: italic;
+  }
+  .price-box {
+    border: 1px solid rgba(201,168,76,0.35);
+    padding: 50px 40px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  .price-box::before {
+    content: 'ONE TIME ENROLLMENT';
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--deep);
+    padding: 0 16px;
+  }
+  .price-amount {
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .price-amount sup {
+    font-size: 32px;
+    vertical-align: super;
+    color: var(--gold);
+  }
+  .price-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--grey-light);
+    letter-spacing: 0.15em;
+    margin-top: 10px;
+  }
+  .price-includes {
+    margin-top: 30px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .price-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--parchment-dim);
+  }
+  .price-item::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 8px;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+  .cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 22px 40px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    margin-top: 40px;
+    transition: background 0.2s, transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .cta-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .cta-btn:hover::after { opacity: 1; }
+  .cta-btn:active { transform: translateY(0); }
+  .guarantee {
+    margin-top: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--grey-light);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 50px 30px;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.12);
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 0.12em;
+    line-height: 2;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .historical-inner {
+      grid-template-columns: 1fr;
+    }
+    .col-divider { display: none; }
+    .pvc-grid { grid-template-columns: 1fr; }
+    .pvc-col-header.consumer, .pvc-col-header.producer { display: none; }
+    .pvc-cell.consumer::before { content: '✕ Consumer — '; }
+    .pvc-cell.producer::before { content: '◆ Producer — '; }
+    .module { grid-template-columns: 1fr; }
+    .module-num { font-size: 36px; text-align: left; }
+    .pull-quote { padding: 30px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>THE PRODUCER ECONOMY</span>
+    <span>◆</span>
+    <span>SOCIAL PLATFORMS ARE NOT STAGES — THEY ARE MARKETS</span>
+    <span>◆</span>
+    <span>PRODUCERS EARN — CONSUMERS SPEND ATTENTION</span>
+    <span>◆</span>
+    <span>MCLUHAN SAW THIS IN 1964</span>
+    <span>◆</span>
+    <span>ARE YOU QUALIFIED?</span>
+    <span>◆</span>
+    <span>THE PRODUCER ECONOMY</span>
+    <span>◆</span>
+    <span>SOCIAL PLATFORMS ARE NOT STAGES — THEY ARE MARKETS</span>
+    <span>◆</span>
+    <span>PRODUCERS EARN — CONSUMERS SPEND ATTENTION</span>
+    <span>◆</span>
+    <span>MCLUHAN SAW THIS IN 1964</span>
+    <span>◆</span>
+    <span>ARE YOU QUALIFIED?</span>
+    <span>◆</span>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <span class="edition-label">Classified Intelligence — Vol. I</span>
+  <h1>The <em>Producer</em><br>Economy</h1>
+  <p class="masthead-sub">The secrets of getting monetized on social platforms &amp; why most people will never qualify</p>
+  <span class="divider-ornament">— ◆ —</span>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">The Report They Won't Publish</p>
+  <h2 class="hero-headline">
+    Every social platform is a <strong>closed economy.</strong><br>
+    You are either a producer inside it<br>
+    or raw material for one.
+  </h2>
+  <p class="hero-body">
+    Billions of people post. They share, comment, scroll, react. They build audiences and celebrate followers. But <em>almost none of them get paid</em> — not because they lack talent, not because the algorithm is against them, but because they have never understood the fundamental economic structure they are participating in.<br><br>
+    The platforms aren't broken. The people are miscategorized. And this was predicted, in writing, decades before the internet existed.
+  </p>
+
+  <div class="pull-quote reveal">
+    <p>"The medium is the message. The user who does not understand the medium is consumed by it."</p>
+    <cite>Marshall McLuhan — Understanding Media, 1964</cite>
+  </div>
+</section>
+
+<!-- HISTORICAL CONTEXT -->
+<section class="historical">
+  <div class="historical-inner reveal">
+    <div class="historical-col">
+      <span class="year-badge">1964</span>
+      <span class="section-label">The Prophecy</span>
+      <h3>McLuhan Told Us. No One Was Ready to Hear It.</h3>
+      <p>Marshall McLuhan, a media theorist most people have never read, published a framework that perfectly describes why <em>most creators fail to monetize</em>: the medium shapes behavior before content is even created.</p>
+      <p>He argued that every new communication medium restructures the social and economic relationships of those who use it. The printing press didn't just deliver books — it created publishers and readers. Radio didn't just broadcast — it created broadcasters and audiences.</p>
+      <p><em>Social platforms didn't just create content — they created producers and consumers. The question was always: which one are you?</em></p>
+    </div>
+    <div class="col-divider"></div>
+    <div class="historical-col">
+      <span class="year-badge">Now</span>
+      <span class="section-label">The Reality</span>
+      <h3>The Digital Economy Has Two Classes. Most People Choose Wrong.</h3>
+      <p>Instagram, YouTube, TikTok, LinkedIn, X — these are not just platforms. They are <em>economies with built-in class structures</em>. At the top: producers who supply value and extract revenue. At the base: consumers who supply attention and generate revenue for producers.</p>
+      <p>The tragedy is that most people trying to "make it" on social media are operating with a consumer mindset inside a producer system. They are waiting to be discovered. They are creating reactively. They are building on borrowed land with a tenant's psychology.</p>
+      <p><em>The platform cannot pay you if your identity inside it is a consumer. It is not personal. It is structural.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCER vs CONSUMER DIAGNOSTIC -->
+<section class="pvc-section">
+  <div class="pvc-header reveal">
+    <h2>The <span>Diagnostic</span><br>Which Side of the Economy Are You On?</h2>
+    <p>This is not about effort. It is about economic identity. Read both columns honestly.</p>
+  </div>
+
+  <div class="pvc-grid reveal">
+    <div class="pvc-col-header consumer">The Consumer Identity</div>
+    <div class="pvc-col-header producer">The Producer Identity</div>
+
+    <div class="pvc-cell consumer">Waits for the "right time" to post</div>
+    <div class="pvc-cell producer">Operates on a publishing schedule regardless of mood</div>
+
+    <div class="pvc-cell consumer">Measures success by likes and follower count</div>
+    <div class="pvc-cell producer">Measures success by conversion, revenue, and reach</div>
+
+    <div class="pvc-cell consumer">Creates content based on trends</div>
+    <div class="pvc-cell producer">Creates trends by owning a consistent point of view</div>
+
+    <div class="pvc-cell consumer">Sees the platform as the destination</div>
+    <div class="pvc-cell producer">Uses the platform as a distribution channel to owned assets</div>
+
+    <div class="pvc-cell consumer">Trades time for attention</div>
+    <div class="pvc-cell producer">Builds systems that generate attention without their time</div>
+
+    <div class="pvc-cell consumer">Has no product — is the product</div>
+    <div class="pvc-cell producer">Has products, offers, and intellectual property that compounds</div>
+
+    <div class="pvc-cell consumer">Chases the algorithm</div>
+    <div class="pvc-cell producer">Understands the algorithm serves producers first</div>
+
+    <div class="pvc-cell consumer">Feels the platform "owes" them visibility</div>
+    <div class="pvc-cell producer">Knows visibility must be earned through economic contribution</div>
+  </div>
+
+  <div class="pvc-verdict reveal">
+    <p>If you saw yourself more in the left column than the right, you are not being failed by the platform. You are operating with the wrong <strong>economic identity</strong>. This course is the recertification process.</p>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section class="curriculum">
+  <div class="curriculum-inner">
+    <div class="curriculum-header reveal">
+      <h2>The Course Curriculum</h2>
+      <p>Six modules. No fluff. Each one is a structural upgrade to how you operate inside the digital economy.</p>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">01</div>
+      <div class="module-content">
+        <span class="module-tag">Foundation</span>
+        <h3 class="module-title">The Architecture of Digital Economies — What McLuhan, Toffler &amp; Drucker All Predicted</h3>
+        <p class="module-desc">Before you post a single piece of content, you need to understand the economic system you are entering. This module decodes the structural DNA of every major social platform using frameworks developed before the internet existed — and shows you exactly why they are eerily accurate.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">The Medium Is the Market</span>
+          <span class="lesson-pill">Producer vs. Prosumer vs. Consumer</span>
+          <span class="lesson-pill">Platform Economics 101</span>
+          <span class="lesson-pill">The Attention-to-Revenue Bridge</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">02</div>
+      <div class="module-content">
+        <span class="module-tag">Identity</span>
+        <h3 class="module-title">Economic Identity Recalibration — Why Your Default Setting Is Consumer</h3>
+        <p class="module-desc">You were socialized to consume. School, media, entertainment — everything optimized you to be an audience. This module reveals exactly how your current behaviors betray a consumer identity and gives you the precise recalibration to become a recognized producer inside any platform's economy.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">The Consumer Conditioning Audit</span>
+          <span class="lesson-pill">Rebuilding Your Content Identity</span>
+          <span class="lesson-pill">The Ownership Framework</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">03</div>
+      <div class="module-content">
+        <span class="module-tag">Qualification</span>
+        <h3 class="module-title">Platform Qualification — What Each Platform Actually Rewards and Why</h3>
+        <p class="module-desc">Every platform has an economic constitution — a set of unspoken rules that determine who gets amplified and who gets buried. This module decodes the qualification criteria for monetization across the major platforms and shows you how to become a recognized economic participant on each one.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">YouTube's Economic Model</span>
+          <span class="lesson-pill">TikTok's Creator Fund Reality</span>
+          <span class="lesson-pill">Instagram's Producer Hierarchy</span>
+          <span class="lesson-pill">LinkedIn's B2B Economy</span>
+          <span class="lesson-pill">X's Monetization Structure</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">04</div>
+      <div class="module-content">
+        <span class="module-tag">Systems</span>
+        <h3 class="module-title">The Producer Stack — Building Content Infrastructure That Earns Without You</h3>
+        <p class="module-desc">Producers don't trade hours for content. They build systems. This module shows you how to construct a lean content operation that outputs at a producer level without consuming your life — critical for career changers, parents, and anyone who cannot afford to go all-in on social media as a primary activity.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">The Minimum Viable Producer System</span>
+          <span class="lesson-pill">Content Compounding</span>
+          <span class="lesson-pill">Distribution Multipliers</span>
+          <span class="lesson-pill">Time-Freed Publishing</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">05</div>
+      <div class="module-content">
+        <span class="module-tag">Monetization</span>
+        <h3 class="module-title">Revenue Architecture — The 5 Monetization Models That Actually Work in 2024</h3>
+        <p class="module-desc">Platform ad revenue is the smallest, most volatile income stream available to producers. This module reveals the five monetization structures used by the highest-earning creators — and why most people never discover them because they are focused on the wrong metric entirely.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Direct Revenue Streams</span>
+          <span class="lesson-pill">The Owned Asset Ecosystem</span>
+          <span class="lesson-pill">Licensing Your Expertise</span>
+          <span class="lesson-pill">The Platform-to-Funnel Bridge</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="module reveal">
+      <div class="module-num">06</div>
+      <div class="module-content">
+        <span class="module-tag">Execution</span>
+        <h3 class="module-title">The 90-Day Producer Qualification Plan — From Consumer to Certified</h3>
+        <p class="module-desc">Theory without execution is entertainment. This final module gives you a day-by-day 90-day plan to make your economic identity shift visible, measurable, and monetizable. By Day 90 you will either be generating revenue or you will have clear evidence of exactly what is blocking it.</p>
+        <div class="module-lessons">
+          <span class="lesson-pill">Days 1–30: Identity Shift</span>
+          <span class="lesson-pill">Days 31–60: System Build</span>
+          <span class="lesson-pill">Days 61–90: Monetization Activation</span>
+          <span class="lesson-pill">Daily Accountability Framework</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IS THIS FOR -->
+<section class="for-section">
+  <div class="for-header reveal">
+    <h2>Who This Is <em>For</em></h2>
+  </div>
+  <div class="for-grid reveal">
+    <div class="for-card">
+      <span class="for-icon">⟶</span>
+      <h4>The Career Changer</h4>
+      <p>You have expertise in a field and are looking for a way to monetize your knowledge independently. You do not want to build a media empire — you want a legitimate income stream that respects your time.</p>
+    </div>
+    <div class="for-card">
+      <span class="for-icon">⟶</span>
+      <h4>The Undecided Creator</h4>
+      <p>You have been posting inconsistently, trying different platforms, chasing different strategies. You are not undisciplined — you are operating without a framework. This course is the framework.</p>
+    </div>
+    <div class="for-card">
+      <span class="for-icon">⟶</span>
+      <h4>The Time-Starved Parent or Professional</h4>
+      <p>You cannot afford to be online all day. You need a system that works while you are off the platform — one that builds equity, not just engagement. This is specifically built for your constraints.</p>
+    </div>
+    <div class="for-card">
+      <span class="for-icon">⟶</span>
+      <h4>The Plateau'd Creator</h4>
+      <p>You have followers. You have content. But the monetization is not converting or not growing. Something structural is off. This course will identify and fix exactly what that is.</p>
+    </div>
+  </div>
+  <div class="not-for reveal">
+    <span class="not-for-label">This is not for</span>
+    <p>People looking for viral shortcuts, follower hacks, or any strategy that prioritizes visibility over economic identity. If you want to go viral, this is the wrong room. If you want to get paid, stay.</p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="pricing-inner">
+    <p class="pricing-eyebrow reveal">Enrollment Now Open</p>
+    <h2 class="reveal">Qualify.<br><em>Or stay a consumer.</em></h2>
+    <p class="pricing-desc reveal">One course. One economic identity shift. The only question is whether you are serious about becoming a producer in the digital economy or whether you will keep consuming content about how to make content.</p>
+
+    <div class="price-box reveal">
+      <div class="price-amount"><sup>$</sup>197</div>
+      <p class="price-note">One-time. Lifetime access. No subscription.</p>
+      <div class="price-includes">
+        <div class="price-item">Six full modules covering economic identity, platform qualification, and monetization architecture</div>
+        <div class="price-item">The 90-Day Producer Qualification Plan with daily execution framework</div>
+        <div class="price-item">Platform-by-platform monetization decodes (YouTube, TikTok, Instagram, LinkedIn, X)</div>
+        <div class="price-item">The Consumer Identity Audit — identify and eliminate every behavior holding you in consumer status</div>
+        <div class="price-item">Lifetime access including all future updates as platforms evolve</div>
+        <div class="price-item">Private community access — a room of producers, not consumers</div>
+      </div>
+       <a href="https://theproducereconomy.gumroad.com/l/gslinj?wanted=true" class="cta-btn" target="_blank">Enroll Now — Secure Your Place</a>
+      <p class="guarantee">◆ &nbsp; 14-Day No-Questions Guarantee &nbsp; ◆ &nbsp; Instant Access Upon Enrollment</p>
+    </div>
+
+    <div class="pull-quote reveal" style="margin-top: 60px;">
+      <p>The platforms are not gatekeeping your success. Your economic identity is. And that is something you can change — starting today.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Producer Economy</div>
+  <p>© 2024 · All Rights Reserved<br>
+  Results are not guaranteed. Individual outcomes depend on execution, market conditions, and consistency.<br>
+  This course provides education and frameworks, not financial advice.</p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Masthead entrance
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.masthead h1, .masthead-sub, .edition-label, .divider-ornament').forEach(el => {
+      el.style.animationPlayState = 'running';
+    });
+  });
+</script>
+</body>
+</html>
