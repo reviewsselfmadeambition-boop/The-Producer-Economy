@@ -1044,5 +1044,259 @@
     });
   });
 </script>
+  <!-- POPUP STYLES -->
+<style>
+  .pe-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.82);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 99999;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .pe-overlay.pe-visible {
+    display: flex;
+    animation: pe-overlayIn 0.3s ease;
+  }
+  @keyframes pe-overlayIn { from{opacity:0} to{opacity:1} }
+  @keyframes pe-overlayOut { from{opacity:1} to{opacity:0} }
+  @keyframes pe-slideUp   { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  @keyframes pe-slideDown { from{transform:translateY(0)} to{transform:translateY(100%)} }
+
+  .pe-popup {
+    width: 100%;
+    max-width: 680px;
+    background: #0f0d08;
+    border-radius: 24px 24px 0 0;
+    padding: 0 0 36px;
+    animation: pe-slideUp 0.38s cubic-bezier(0.32,0.72,0,1);
+    overflow: hidden;
+    box-shadow: 0 -24px 80px rgba(0,0,0,0.8), 0 -2px 0 #c9a84c;
+    font-family: 'Libre Baskerville', Georgia, serif;
+  }
+
+  .pe-accent {
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, #8a6e2f 10%, #c9a84c 30%, #e8c96a 50%, #c9a84c 70%, #8a6e2f 90%, transparent 100%);
+  }
+  .pe-handle {
+    width: 36px; height: 4px;
+    background: rgba(201,168,76,0.25); border-radius: 2px;
+    margin: 16px auto 24px;
+  }
+
+  .pe-icon-row {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-bottom: 14px; padding: 0 28px;
+  }
+  .pe-warn-icon {
+    width: 40px; height: 40px;
+    background: rgba(201,168,76,0.1);
+    border: 1.5px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    animation: pe-warnPulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pe-warnPulse {
+    0%,100%{ box-shadow: 0 0 0 0 rgba(201,168,76,0.35); }
+    50%{     box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+  }
+  .pe-warn-icon svg { width: 20px; height: 20px; }
+  .pe-eyebrow {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 10px; letter-spacing: 0.3em;
+    color: #c9a84c; text-transform: uppercase;
+  }
+
+  .pe-headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(20px, 4vw, 26px);
+    font-weight: 900; color: #faf7f0;
+    text-align: center; line-height: 1.2;
+    padding: 0 28px; margin-bottom: 18px;
+  }
+
+  .pe-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.22), transparent);
+    margin: 0 28px 20px;
+  }
+
+  .pe-body {
+    font-size: clamp(13px, 2vw, 15px);
+    color: rgba(200,185,150,0.88);
+    line-height: 1.78; text-align: center;
+    padding: 0 32px; margin-bottom: 22px;
+  }
+  .pe-body strong { color: #faf7f0; font-weight: 700; }
+
+  .pe-countdown {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 0 28px 24px;
+    padding: 11px 20px;
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+  }
+  .pe-cd-dot {
+    width: 7px; height: 7px;
+    background: #c9a84c; border-radius: 50%; flex-shrink: 0;
+    animation: pe-overlayIn 1.4s ease-in-out infinite alternate;
+  }
+  .pe-cd-label {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: rgba(201,168,76,0.65); text-transform: uppercase;
+  }
+  .pe-cd-timer {
+    font-family: 'DM Mono', 'Courier New', monospace;
+    font-size: 18px; font-weight: 500;
+    color: #c9a84c; letter-spacing: 0.08em;
+  }
+
+  .pe-btns { padding: 0 28px; display: flex; flex-direction: column; gap: 12px; }
+
+  .pe-btn-yes {
+    width: 100%; background: #c9a84c; color: #000;
+    border: none; border-radius: 8px; padding: 16px 24px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    font-family: 'DM Mono', 'Courier New', monospace;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    transition: background 0.15s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .pe-btn-yes:hover { background: #e8c96a; transform: translateY(-1px); }
+  .pe-btn-yes:active { transform: translateY(0); }
+
+  .pe-btn-no {
+    width: 100%; background: transparent;
+    color: rgba(255,255,255,0.28);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px; padding: 12px 24px;
+    font-size: 11px; font-weight: 500; cursor: pointer;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    letter-spacing: 0.04em; font-style: italic;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .pe-btn-no:hover { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.18); }
+</style>
+
+<!-- POPUP HTML -->
+<div class="pe-overlay" id="peOverlay">
+  <div class="pe-popup" id="pePopup">
+
+    <div class="pe-accent"></div>
+    <div class="pe-handle"></div>
+
+    <div class="pe-icon-row">
+      <div class="pe-warn-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <span class="pe-eyebrow">Important Information</span>
+    </div>
+
+    <h2 class="pe-headline">Important Information<br>About This Opportunity</h2>
+
+    <div class="pe-divider"></div>
+
+    <p class="pe-body">
+      You're about to miss an exclusive presentation that will be
+      <strong>taken offline shortly.</strong> By exiting this page you accept that
+      you will lose access to this <strong>limited-time video presentation</strong>
+      and it may not be available in the future.
+      <br><br>
+      Continue watching if you'd like to discover exactly <strong>why most people
+      will never qualify to get monetized</strong> — and how you can secure your
+      position on the right side of <strong>The Producer Economy.</strong>
+    </p>
+
+    <div class="pe-countdown">
+      <div class="pe-cd-dot"></div>
+      <span class="pe-cd-label">Presentation closes in</span>
+      <span class="pe-cd-timer" id="peCdTimer">14:37</span>
+    </div>
+
+    <div class="pe-btns">
+      <button class="pe-btn-yes" onclick="peHide()">
+        ◆ &nbsp; Yes — Continue Watching
+      </button>
+      <button class="pe-btn-no" onclick="peHide()">
+        No thanks — I'll pass on this opportunity
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- POPUP LOGIC -->
+<script>
+(function() {
+  var overlay  = document.getElementById('peOverlay');
+  var popup    = document.getElementById('pePopup');
+  var timerEl  = document.getElementById('peCdTimer');
+  var secs     = 877; // 14:37
+  var shown    = false;
+  var cdActive = false;
+
+  function peShow() {
+    if (shown) return;
+    shown = true;
+    overlay.classList.add('pe-visible');
+    popup.style.animation = 'pe-slideUp 0.38s cubic-bezier(0.32,0.72,0,1)';
+    if (!cdActive) startCountdown();
+  }
+
+  window.peHide = function() {
+    popup.style.animation = 'pe-slideDown 0.28s ease forwards';
+    overlay.style.animation = 'pe-overlayOut 0.3s ease forwards';
+    setTimeout(function() {
+      overlay.classList.remove('pe-visible');
+      overlay.style.animation = '';
+    }, 300);
+  };
+
+  function startCountdown() {
+    cdActive = true;
+    setInterval(function() {
+      if (secs <= 0) return;
+      secs--;
+      var m = Math.floor(secs / 60);
+      var s = secs % 60;
+      timerEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    }, 1000);
+  }
+
+  // --- TRIGGER 1: Exit intent (mouse leaves viewport upward) ---
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY <= 0) peShow();
+  });
+
+  // --- TRIGGER 2: Mobile scroll-back-up (user losing interest) ---
+  var lastY = 0;
+  var scrollUps = 0;
+  window.addEventListener('scroll', function() {
+    var y = window.scrollY;
+    if (y < lastY) {
+      scrollUps++;
+      if (scrollUps >= 3 && y < 300) peShow();
+    } else {
+      scrollUps = 0;
+    }
+    lastY = y;
+  });
+
+  // --- TRIGGER 3: Time-on-page fallback (90 seconds) ---
+  setTimeout(peShow, 90000);
+
+})();
+</script>
+
+<!-- END EXIT-INTENT POPUP -->
 </body>
 </html>
